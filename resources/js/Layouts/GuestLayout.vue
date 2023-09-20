@@ -7,6 +7,7 @@ import { Link } from '@inertiajs/vue3';
     <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
         <div>
             <Link href="/">
+                <!-- ここで画像の大きさを変える(元のvueファイルではなく読み込んでる所で変える) -->
                 <ApplicationLogo class="w-20 h-20 fill-current text-gray-500" />
             </Link>
         </div>
