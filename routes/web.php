@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\InertiaTestController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\CustomerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,10 +19,11 @@ use App\Http\Controllers\ItemController;
 |
 */
 // ->middleware(['auth', 'verified'])：認証されたら表示される
-Route::resource('/items', ItemController::class)
+Route::resource('items', ItemController::class)
 ->middleware(['auth', 'verified']);
 
-
+Route::resource('customers', CustomerController::class)
+->middleware(['auth', 'verified']);
 
 // renderを使う場合は直接vueファイルを表示させる
 // →下のだとInertiaTest.vueを表示させる（URLが/inertia-testの時に）
