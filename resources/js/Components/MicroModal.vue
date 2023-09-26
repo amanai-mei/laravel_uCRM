@@ -27,9 +27,9 @@ const searchCustomers = async () => { //async
 // create.vueに値を渡す　子コンポーネント→親コンポーネントに渡す時にdefineEmitsを使う
 const emit = defineEmits(['update: customerId'])
 const setCustomer = e => { //eの部分にid,kanaの値が引数に入ってる
-    search.value = e.kana
+    search.value = e.kana //検索ボックスにフリガナを入れる
     emit('update:customerId', e.id) //親コンポーネントに持っていく
-    toggleStatus()
+    toggleStatus() //クリックしたらモーダルを閉じる処理
 }
 
 

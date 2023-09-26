@@ -61,7 +61,7 @@ const storePurchase = () => {
 
 const quantity = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"] //option用
 
-const setCustomerId = id => {
+const setCustomerId = id => { //idがMicroModalコンポーネントのemitで記載した値を取得してる部分
     form.customer_id = id //formのcustomer_idの部分にMicroModalコンポーネントで取得したidの値を代入し登録
 }
 
