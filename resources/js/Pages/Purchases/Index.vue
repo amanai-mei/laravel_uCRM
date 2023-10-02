@@ -2,18 +2,27 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import FlashMessage from '@/Components/FlashMessage.vue'
+import { onMounted,ref } from 'vue'
+import Pagination from '@/Components/Pagination.vue'
+import  dayjs  from 'dayjs';
+// import{ Inertia } from '@inertiajs/inertia';
 
-defineProps({
-    items: Array
+const props = defineProps({
+    orders: Object
 })
+
+onMounted(() => { //ページ読み込み後、即座に実行
+    console.log(props.orders.data)
+})
+
 </script>
 
 <template>
-    <Head title="商品一覧"></Head>
+    <Head title="購買履歴" />
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">商品一覧</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">購買履歴</h2>
         </template>
 
         <div class="py-12">
@@ -24,38 +33,39 @@ defineProps({
                             <div class="container px-5 py-8 mx-auto">
                                 <FlashMessage/>
                                 <div class="flex pl-4 my-4 lg:w-2/3 w-full mx-auto">
-                                    <Link :href="route('items.create')">
-                                        <button class="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded">商品登録</button>
-                                    </Link>
+                                    <div>
+                                        <input type="text" name="search" v-model="search">
+                                        <button class="bg-blue-300 text-white py-2 px-2" @click="searchCustomers">検索</button>
+                                    </div>
                                 </div>
                                 <div class="lg:w-2/3 w-full mx-auto overflow-auto">
                                     <table class="table-auto w-full text-left whitespace-no-wrap">
                                         <thead>
                                         <tr>
                                             <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tl rounded-bl">Id</th>
-                                            <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">商品名</th>
-                                            <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">価格</th>
+                                            <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">氏名</th>
+                                            <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">合計金額</th>
                                             <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">ステータス</th>
+                                            <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">購入日</th>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr v-for="item in items" :key="item.id">
+                                        <tr v-for="order in props.orders.data" :key="order.id">
                                             <td class="border-b-2 border-gray-200 px-4 py-3">
-                                                <Link class="text-blue-400" :href="route('items.show',{ item: item.id })">
-                                                    {{ item.id }}
+                                                <Link class="text-blue-400" :href="route('purchases.show', { purchase: order.id })">
+                                                    {{ order.id }}
                                                 </Link>
                                             </td>
-                                            <td class="border-b-2 border-gray-200 px-4 py-3">{{ item.name }}</td>
-                                            <td class="border-b-2 border-gray-200 px-4 py-3">{{ item.price }}</td>
-                                            <td class="border-b-2 border-gray-200 px-4 py-3">
-                                                <span v-if="item.is_selling === 1">販売中</span>
-                                                <span v-if="item.is_selling === 0">停止中</span>
-                                            </td>
+                                            <td class="border-b-2 border-gray-200 px-4 py-3">{{ order.customer_name }}</td>
+                                            <td class="border-b-2 border-gray-200 px-4 py-3">{{ order.total }}</td>
+                                            <td class="border-b-2 border-gray-200 px-4 py-3">{{ order.status}}</td>
+                                            <td class="border-b-2 border-gray-200 px-4 py-3">{{ dayjs(order.created_at).format('YYYY-MM-DD HH:mm:ss') }}</td>
                                         </tr>
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
+                            <Pagination class="mt-6" :links="props.orders.links"></Pagination>
                         </section>
                     </div>
                 </div>

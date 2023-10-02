@@ -12,6 +12,8 @@
 
         <!-- Scripts -->
         @routes
+        <link rel="stylesheet" href="{{ url(mix('css/app.css')) }}">
+        <script src="{{ mix('js/app.js') }}" defer></script>
         @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
         @inertiaHead
     </head>

@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
 
         //purchaseを登録時に中間テーブルにも同時に登録する(1件の購入時に1〜3件の商品情報を登録とする)
         //purchase_idのカラムは自動的に登録されるのでそれ以外の処理を記載する
-        Purchase::factory(100)->create()
+        Purchase::factory(30000)->create()
         ->each(function(Purchase $purchase) use  ($items) { //eachは100件分のダミーデータを1件ずつ処理してくれる
             $purchase->items()->attach( //attachで中間テーブルに情報を登録してくれる
                 //外部キー以外で中間テーブルに情報追加する場合は第二引数にかく

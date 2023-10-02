@@ -19,15 +19,19 @@ use App\Http\Controllers\PurchaseController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-// ->middleware(['auth', 'verified'])：認証されたら表示される
-Route::resource('items', ItemController::class)
-->middleware(['auth', 'verified']);
 
-Route::resource('customers', CustomerController::class)
-->middleware(['auth', 'verified']);
+Route::resource('items', ItemController::class);
+// ->middleware(['auth', 'verified']);
 
-Route::resource('purchases', PurchaseController::class)
-->middleware(['auth', 'verified']);
+Route::resource('customers', CustomerController::class);
+// ->middleware(['auth', 'verified']);
+
+Route::resource('purchases', PurchaseController::class);
+// ->middleware(['auth', 'verified']);
+
+
+
+
 
 // renderを使う場合は直接vueファイルを表示させる
 // →下のだとInertiaTest.vueを表示させる（URLが/inertia-testの時に）
@@ -51,6 +55,7 @@ Route::delete('/inertia/{id}',[InertiaTestController::class,'delete'])->name('in
 
 
 Route::get('/', function () {
+    // dd('aa');
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
