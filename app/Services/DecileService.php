@@ -1,55 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
-use Inertia\Inertia;
-use App\Models\Order;
+namespace App\Services;
 use Illuminate\Support\Facades\DB;
 
-class AnalysisController extends Controller
+class DecileService
 {
-    public function index(){
-
-        //期間指定
-        $startDate = '2022-08-01';
-        $endDate = '2022-08-31';
-
-        // Order::betweenDateはOrder.phpのbetweenDateのメソッドを使用してる(ローカルスコープ)
-        // $period = Order::betweenDate($startDate, $endDate)
-        //         ->groupBy('id')
-        //         ->selectRaw('id, sum(subtotal) as total, customer_name, status, created_at')
-        //         ->orderBy('created_at')
-        //         ->paginate(50);
-
-        //日別で取得
-        // 1 購買id毎の売上をまとめ、dateをフォーマットした状態のサブクエリを作る
-        // 2 サブクエリをgroupByで日毎にまとめる
-        // $subQuery = Order::betweenDate($startDate, $endDate)
-        //         //->where('status', true):キャンセルしてないものだけ
-        //         //->groupBy('id'):購買id毎の売上をまとめる
-        //         ->where('status', true)->groupBy('id')
-        //         // SUM(subtotal) as totalPerPurchase:購買毎の合計
-        //         ->selectRaw('id, SUM(subtotal) as totalPerPurchase, DATE_FORMAT(created_at, "%Y%m%d") as date');
-
-        // $data = DB::table($subQuery) //この書き方だと上のクエリにプラスで更にgroupByなどが出来るようになる
-        //         ->groupBy('date') //日毎にまとめる
-        //         ->selectRaw('date, sum(totalPerPurchase)as total') //日毎の合計を出す
-        //         ->get();
-        //         // dd($data);
-
-        return Inertia::render('Analysis');
-    }
-    public function decile()
+    public static function decile($subQuery)
     {
-        //期間指定
-        $startDate = '2022-08-01';
-        $endDate = '2022-08-31';
-
         //デジル分析
         // 1.購買ID毎にまとめる
-        $subQuery = Order::betweenDate($startDate, $endDate)
-                    ->groupBy('id') //購買id毎に魔まとめる
+        $subQuery = $subQuery->groupBy('id') //購買id毎に魔まとめる
                     ->selectRaw('id, customer_id, customer_name, SUM(subtotal) as totalPErPurchase'); //まとめたものの金額を合計する
 
         // 2.会員毎にまとめて購入金額順にソートする
@@ -116,5 +76,12 @@ class AnalysisController extends Controller
                 ->selectRaw('decile, average, totalPerGroup, round(100 * totalPerGroup / @total, 1) as totalRadio')->get();
                 // totalPerGroup:グループ毎の合計を100倍して全ての合計値を割り算する
 
+                $labels = $data->pluck('decile');
+                $totals = $data->pluck('totalPerGroup');
+
+                return[$data, $labels, $totals];
+
     }
 }
+
+?>
