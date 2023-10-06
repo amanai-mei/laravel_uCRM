@@ -11,6 +11,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use App\Services\AnalysisService;
 use App\Services\DecileService;
+use App\Services\RFMService;
 
 
 class AnalysisController extends Controller
@@ -61,6 +62,22 @@ class AnalysisController extends Controller
             //配列を受け取ってそれぞれの変数に格納するためlist()を使用する
             list($data, $labels, $totals) = DecileService::decile($subQuery);
         }
+
+        if($request->type === 'rfm') //Analysisの方で定義してるタイプだったら
+        {
+            //配列を受け取ってそれぞれの変数に格納するためlist()を使用する
+            list($data, $totals, $eachCount) = RFMService::rfm($subQuery, $request->rfmPrms);
+
+            // Ajaxなのでjson形式で返す必要がある(連想配列で必要な情報を渡す)
+            return response()->json([
+                'data' => $data,
+                'type' => $request->type,
+                'eachCount' => $eachCount,
+                'totals' => $totals
+            ], Response::HTTP_OK); //Response::HTTP_OKの定数を使用する
+
+        }
+
 
         // Ajaxなのでjson形式で返す必要がある(連想配列で必要な情報を渡す)
         return response()->json([
